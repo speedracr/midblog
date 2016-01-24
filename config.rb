@@ -17,11 +17,22 @@ page '/*.txt', layout: false
 #  which_fake_page: "Rendering a fake page with a local variable" }
 
 # General configuration
-
 # Reload the browser automatically whenever files change
 configure :development do
   activate :livereload
 end
+
+compass_config do |config|
+  config.add_import_path "bower_components/foundation/scss"
+  config.output_style = :compact
+end
+
+after_configuration do
+  @bower_config = JSON.parse(IO.read("#{root}/.bowerrc"))
+      sprockets.append_path File.join "#{root}", @bower_config["directory"]
+end
+
+set :haml, { :ugly => true, :format => :html5 }
 
 ###
 # Helpers
@@ -36,9 +47,6 @@ end
 
 # Build-specific configuration
 configure :build do
-  # Minify CSS on build
-  # activate :minify_css
-
-  # Minify Javascript on build
-  # activate :minify_javascript
+   activate :minify_css
+   activate :minify_javascript
 end
